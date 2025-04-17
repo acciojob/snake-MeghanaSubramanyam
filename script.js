@@ -3,7 +3,7 @@ const pixelSize = 10;
 const totalPixels = (boardSize / pixelSize) ** 2;
 const gameContainer = document.getElementById("gameContainer");
 
-// Create grid
+// Generate 40x40 grid
 for (let i = 0; i < totalPixels; i++) {
   const pixel = document.createElement("div");
   pixel.classList.add("pixel");
@@ -11,35 +11,30 @@ for (let i = 0; i < totalPixels; i++) {
   gameContainer.appendChild(pixel);
 }
 
-let snake = [760]; // Start at 20th row, 1st column (20 * 40)
+// Initial game setup
+let snake = [760]; // 20th row, 1st col
 let direction = "right";
-let score = 0;
 let food = null;
+let score = 0;
 
-// Score update
 function updateScore() {
   document.getElementById("pointsEarned").textContent = score;
 }
 
-// Place food
 function placeFood() {
-  if (snake.length === 1) {
-    food = snake[0] + 1;
-  } else {
-    while (true) {
-      let temp = Math.floor(Math.random() * totalPixels);
-      if (!snake.includes(temp)) {
-        food = temp;
-        break;
-      }
+  while (true) {
+    const rand = Math.floor(Math.random() * totalPixels);
+    if (!snake.includes(rand)) {
+      food = rand;
+      const foodPixel = document.getElementById("pixel" + food);
+      foodPixel.classList.add("food");
+      break;
     }
   }
-  document.getElementById("pixel" + food).classList.add("food");
 }
 
-// Move snake
 function moveSnake() {
-  let head = snake[snake.length - 1];
+  const head = snake[snake.length - 1];
   let newHead;
 
   switch (direction) {
@@ -71,34 +66,20 @@ function moveSnake() {
   }
 }
 
-// Handle keypress
-document.addEventListener("keydown", e => {
-  switch (e.key) {
-    case "ArrowUp":
-      if (direction !== "down") direction = "up";
-      break;
-    case "ArrowDown":
-      if (direction !== "up") direction = "down";
-      break;
-    case "ArrowLeft":
-      if (direction !== "right") direction = "left";
-      break;
-    case "ArrowRight":
-      if (direction !== "left") direction = "right";
-      break;
-  }
+// Key events
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowUp" && direction !== "down") direction = "up";
+  if (e.key === "ArrowDown" && direction !== "up") direction = "down";
+  if (e.key === "ArrowLeft" && direction !== "right") direction = "left";
+  if (e.key === "ArrowRight" && direction !== "left") direction = "right";
 });
 
-// Initial render
+// Init game
 function init() {
   document.getElementById("pixel" + snake[0]).classList.add("snakeBodyPixel");
   placeFood();
   updateScore();
-
-  // Start movement after everything is set up
-  setTimeout(() => {
-    setInterval(moveSnake, 100);
-  }, 100);
+  setInterval(moveSnake, 100); // 🟢 this ensures snake starts moving
 }
 
 init();
