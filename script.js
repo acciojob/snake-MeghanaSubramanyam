@@ -21,7 +21,7 @@ function updateScore() {
   document.getElementById("pointsEarned").textContent = score;
 }
 
-// Place food in front of snake if starting, else randomly
+// Place food
 function placeFood() {
   if (snake.length === 1) {
     food = snake[0] + 1;
@@ -71,7 +71,7 @@ function moveSnake() {
   }
 }
 
-// Arrow key direction update
+// Handle keypress
 document.addEventListener("keydown", e => {
   switch (e.key) {
     case "ArrowUp":
@@ -89,7 +89,16 @@ document.addEventListener("keydown", e => {
   }
 });
 
-placeFood(); // Initial food
-document.getElementById("pixel" + snake[0]).classList.add("snakeBodyPixel");
+// Initial render
+function init() {
+  document.getElementById("pixel" + snake[0]).classList.add("snakeBodyPixel");
+  placeFood();
+  updateScore();
 
-setInterval(moveSnake, 100); // Auto movement every 100ms
+  // Start movement after everything is set up
+  setTimeout(() => {
+    setInterval(moveSnake, 100);
+  }, 100);
+}
+
+init();
