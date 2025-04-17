@@ -21,17 +21,33 @@ function updateScore() {
   document.getElementById("pointsEarned").textContent = score;
 }
 
+let food = null;
+let score = 0;
+let foodPlaced = false;
+
+function updateScore() {
+  document.getElementById("pointsEarned").textContent = score;
+}
+
 function placeFood() {
-  while (true) {
-    const rand = Math.floor(Math.random() * totalPixels);
-    if (!snake.includes(rand)) {
-      food = rand;
-      const foodPixel = document.getElementById("pixel" + food);
-      foodPixel.classList.add("food");
-      break;
+  if (!foodPlaced) {
+    // First food: directly in front of the snake (starts at pixel760)
+    food = 761;
+    foodPlaced = true;
+  } else {
+    while (true) {
+      const rand = Math.floor(Math.random() * totalPixels);
+      if (!snake.includes(rand)) {
+        food = rand;
+        break;
+      }
     }
   }
+
+  const foodPixel = document.getElementById("pixel" + food);
+  foodPixel.classList.add("food");
 }
+
 
 function moveSnake() {
   const head = snake[snake.length - 1];
@@ -56,14 +72,15 @@ function moveSnake() {
   document.getElementById("pixel" + newHead).classList.add("snakeBodyPixel");
 
   if (newHead === food) {
-    document.getElementById("pixel" + food).classList.remove("food");
-    placeFood();
-    score++;
-    updateScore();
-  } else {
-    const tail = snake.shift();
-    document.getElementById("pixel" + tail).classList.remove("snakeBodyPixel");
-  }
+  document.getElementById("pixel" + food).classList.remove("food");
+  placeFood();        // Place new food
+  score++;
+  updateScore();      // Update score display
+} else {
+  const tail = snake.shift();
+  document.getElementById("pixel" + tail).classList.remove("snakeBodyPixel");
+}
+
 }
 
 // Key events
